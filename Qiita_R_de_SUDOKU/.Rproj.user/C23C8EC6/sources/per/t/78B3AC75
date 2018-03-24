@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1520954328797.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1143942497",
+    "id" : "78B3AC75",
+    "lastKnownWriteTime" : 1520954470,
+    "last_content_update" : 1520954470241,
+    "path" : "F:/OneDrive/[[DataScience]]/40.【R】/数独/01_R_de_SUDOKU/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+        "cursorPosition" : "13,29",
+        "scrollLine" : "20"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
