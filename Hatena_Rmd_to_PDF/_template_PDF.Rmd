@@ -1,0 +1,158 @@
+---
+title: "てすと"
+author: ""
+date: "`r Sys.Date()`"
+output:
+   pdf_document:
+      latex_engine: xelatex 
+      number_sections: true # 見出しごとに番号を振る
+      toc: true
+      toc_depth: 3     # 見出しの表示とその深さを指定
+      highlight: tango # Rスクリプトのハイライト形式
+classoption: xelatex,ja=standard
+documentclass: bxjsarticle
+geometry: no
+header-includes:
+  - \usepackage{amsmath,amssymb}
+  - \usepackage{mathspec}
+  - \usepackage{indentfirst} # first paragraphのインデントを有効化（英文はインデントが不要のため）
+  - \parindent = 1em         # インデント（字下げ）を1文字に設定
+  - \usepackage{zxjatype}    # 日本語組版パッケージ
+  - \setmainfont{游明朝}     # 英語のメインフォント
+  - \setsansfont{游ゴシック Bold} # 英語ゴシック体のフォント
+  - \setjamainfont{游明朝}   # 日本語のメインフォント
+  - \setjasansfont{游ゴシック Bold}  # 日本語ゴシック体のフォント
+  - \usepackage{float} # 図の位置指定（fig.pos）をする場合使う
+editor_options: 
+  chunk_output_type: console
+---
+\fontsize{12}{16} 
+<!-- フォントサイズ一括指定 -->
+\hrulefill 
+<!-- \hrulefill: 区切り線 -->
+
+<!-- pdfで出力する場合，kable(caption = "")で表タイトルが，![図タイトル]()が入る -->
+
+```{r include = FALSE}
+# チャンクオプション一括指定
+## 図の設定
+knitr::opts_chunk$set(fig.width = 5, fig.height = 3, fig.align = 'center', # 図のサイズと中央寄せ
+                      fig.pos = 'h' # h: 記述した部分に図を入れる（デフォはt=頁上部）
+                      # dev = "png", # 図の形式。デフォルトはpdfで，そのほうが高画質に描けるが日本語非対応
+                      # dpi = 72     # 図の解像度（もしpngで出すときはこれをうまく使いたい）
+                      )
+## コード表示設定
+knitr::opts_chunk$set(message = F, warning = F, echo = F) # echo=FでRコード非表示
+```
+
+```{r}
+library(tidyverse)
+library(knitr)
+```
+
+
+# 文章
+
+文章は普通に書けばいい[^1]。
+
+[^1]: `[^1]`で脚注も入る
+
+# 数式の挿入
+
+<!-- この環境の場合，alignはうまくいかなかったがalignedを使ったらうまく行った -->
+
+$$
+\begin{aligned}
+\tau_{SRD} 
+&= E[Y_i(1) - Y_i(0)|X_i = c]\\
+&= \lim_{x\downarrow c} E[Y_i|X_i=x] -  \lim_{x\uparrow c} E[Y_i|X_i=x]
+\end{aligned}
+$$
+
+# 図表の挿入
+
+表のキャプション（「表1:〇〇の表」みたいなの）の指定は，`kable(caption="〇〇の表")`という感じに行う。
+
+図のキャプション（「図1:〇〇のグラフ」みたいなの）の指定は，チャンクオプションで`{r, fig.cap="〇〇のグラフ"}`という感じに行う。
+
+本文中で図表番号を参照するとき（文中の「表1は～」みたいなの）は`\ref{}`を使う。参照のための各図表のラベル設定は図表のキャプション文字内に`\\label{}`を入れて行う。
+
+（コード内で`kable(caption="〇〇の表 \\label{hogehoge}")`，本文中で「表`\ref{hogehoge}`」のようにする）
+
+
+
+## 例
+
+表\ref{tab:kable01}が今回扱うデータの要約統計量である。
+
+```{r}
+rbind(Mean = iris %>% select(-Species) %>% apply(2, mean),
+      S.D. = iris %>% select(-Species) %>% apply(2, sd),
+      Obs. = iris %>% select(-Species) %>% apply(2, length)) %>% 
+  cbind(Species = c("-", "-", length(iris$Species))) %>% 
+  t() %>% 
+  # kableのcaptionが「表1:〇〇」という表タイトルになる
+  kable(caption = "要約統計量 \\label{tab:kable01}")
+```
+
+
+図\ref{fig:fig01}が散布図である
+
+```{r, fig.cap="散布図 \\label{fig:fig01}"}
+ggplot(iris,aes(x = Sepal.Length, y = Petal.Length, color = Species))+
+  geom_point()
+```
+
+
+## Markdownで外部の図を挿入する場合
+
+Markdownで図を挿入する場合は`![キャプション](URL)`になる。
+
+こちらは図の位置指定方法が無い？らしく，デフォルト設定の「常にページ上部に図を挿入」という挙動をしてしまう。うまいこと改ページしてなんとかするしかなさそう？
+
+\clearpage 
+<!-- \clearpage: 改ページ --> 
+
+![アヤメ](img/iris.jpg){#fig:fig02 height=80%}
+
+
+図\ref{fig:fig02}がアヤメの画像である。
+
+
+
+
+# 参考文献 {-}
+
+<!-- {-}で節のナンバリングから除外できる -->
+
+- R Markdown Reference Guide - RStudio  
+https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf
+
+- Options - Chunk options and package options - Yihui Xie | 谢益辉  
+https://yihui.name/knitr/options/
+
+
+- まだ Word で消耗してるの？ 大学のレポートを Markdown で書こう - Qiita  
+https://qiita.com/Kumassy/items/5b6ae6b99df08fb434d9
+  - MarkdownをPandocで変換する際に使える様々な機能がまとめられている
+  
+- Pandoc ユーザーズガイド 日本語版 - Japanese Pandoc User's Association  
+http://sky-y.github.io/site-pandoc-jp/users-guide/
+
+
+- RmdからPDF作成時の図表番号の自動付与と参照方法 – masaR web  
+http://mtokuoka.net/2017/04/22/rmd%E3%81%8B%E3%82%89pdf%E4%BD%9C%E6%88%90%E6%99%82%E3%81%AE%E5%9B%B3%E8%A1%A8%E7%95%AA%E5%8F%B7%E3%81%AE%E8%87%AA%E5%8B%95%E4%BB%98%E4%B8%8E%E3%81%A8%E5%8F%82%E7%85%A7%E6%96%B9%E6%B3%95/
+
+`knitr::kable()`の拡張は`{kableExtra}`などを使う。以下の記事なども参考になる
+
+- knitr to PDFでの複雑なテーブル（行グループのタイトルを追加する） - Qiita  
+https://qiita.com/naru-T/items/ff8cf00d2c9eb38671a1
+
+
+`{DiagrammeR}`のグラフはHTML出力でしか使えないが，graphvizかなんかをインストールしてターミナルからdot言語をグラフに変換する方法がある模様。
+
+- cannot output any DiagrammeR graph to a pdf file through knitr · Issue #133 · rich-iannone/DiagrammeR · GitHub
+https://github.com/rich-iannone/DiagrammeR/issues/133
+
+
+
