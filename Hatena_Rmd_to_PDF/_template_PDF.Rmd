@@ -85,12 +85,19 @@ $$
 
 表\ref{tab:kable01}が今回扱うデータの要約統計量である。
 
+```{r, results='asis'}
+# stargazerの表だとパッケージ製作者の主張が入ってきてうざい
+# library(stargazer)
+# stargazer(iris, title = "要約統計量 \\label{tab:kable01}")
+```
+
+
 ```{r}
-rbind(Mean = iris %>% select(-Species) %>% apply(2, mean),
-      S.D. = iris %>% select(-Species) %>% apply(2, sd),
-      Obs. = iris %>% select(-Species) %>% apply(2, length)) %>% 
-  cbind(Species = c("-", "-", length(iris$Species))) %>% 
-  t() %>% 
+rbind(Mean = iris %>% select(-Species) %>% apply(2, mean) %>% round(3),
+      S.D. = iris %>% select(-Species) %>% apply(2, sd) %>% round(3),
+      Obs. = iris %>% select(-Species) %>% apply(2, length) %>% round(3)) %>%
+  cbind(Species = c("-", "-", length(iris$Species))) %>%
+  t() %>%
   # kableのcaptionが「表1:〇〇」という表タイトルになる
   kable(caption = "要約統計量 \\label{tab:kable01}")
 ```
