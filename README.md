@@ -1,2 +1,1 @@
-# Qiita
-[Qiita](https://qiita.com/nigimitama)で公開したものの資料などを置いておきます。
+[はてなブログ](https://nigimitama.hatenablog.jp/)や[Qiita](https://qiita.com/mitama)で公開したもののコードなど
